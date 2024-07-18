@@ -69,7 +69,11 @@ public class HotelController {
             @Valid @RequestBody BookSpecifiedRoomInput input,
             @PathVariable("roomId") String roomId) {
 
-        return new ResponseEntity<>(hotelService.bookSpecifiedRoom(input), HttpStatus.OK);
+        BookSpecifiedRoomInput bookSpecifiedRoomInput = input.toBuilder()
+                .roomId(roomId)
+                .build();
+
+        return new ResponseEntity<>(hotelService.bookSpecifiedRoom(bookSpecifiedRoomInput), HttpStatus.OK);
     }
 
     @DeleteMapping("/{bookingId}")

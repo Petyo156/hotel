@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+/api/.flattened-pom.xml
+/core/.flattened-pom.xml
+/domain/.flattened-pom.xml
+/persistance/.flattened-pom.xml
+/rest/.flattened-pom.xml
+/.flattened-pom.xml

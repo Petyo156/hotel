@@ -5,25 +5,20 @@
     <parent>
         <groupId>com.tinqinacademy</groupId>
         <artifactId>hotel</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
 
     <name>core</name>
 
-    <properties>
-        <java.version>21</java.version>
-    </properties>
 
     <dependencies>
-
-
         <dependency>
             <groupId>com.tinqinacademy</groupId>
             <artifactId>api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
