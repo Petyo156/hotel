@@ -13,14 +13,30 @@ import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomInput;
 import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomOutput;
 import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorInput;
 import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorOutput;
+import com.tinqinacademy.hotel.persistance.daos.BedsDao;
+import com.tinqinacademy.hotel.persistance.daos.RoomsDao;
+import com.tinqinacademy.hotel.persistance.entities.Beds;
+import com.tinqinacademy.hotel.persistance.more.BathroomType;
+import com.tinqinacademy.hotel.persistance.more.BedSize;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class SystemServiceImpl implements SystemService {
+
+    private final BedsDao bedsDao;
+    private final RoomsDao roomsDao;
+
+    @Autowired
+    public SystemServiceImpl(BedsDao bedsDao, RoomsDao roomsDao) {
+        this.bedsDao = bedsDao;
+        this.roomsDao = roomsDao;
+    }
 
     @Override
     public RegisterVisitorOutput registerVisitor(RegisterVisitorInput input) {
@@ -60,28 +76,57 @@ public class SystemServiceImpl implements SystemService {
     public AdminCreateRoomOutput adminCreateRoom(AdminCreateRoomInput input) {
         log.info("Start adminCreateRoom input: {}", input);
 
-        AdminCreateRoomOutput output = AdminCreateRoomOutput.builder()
-                .id("Best id")
+        Beds beds = Beds.builder()
+                .id(UUID.randomUUID())
+                .bedCount(input.getBedCount())
+                .bedSize(BedSize.getByCode(input.getBedSize()))
                 .build();
 
-//        if ("Best id".equals(output.getId())) {
-//            throw new RuntimeException("Hahahahaha");
-//        }
+        AdminCreateRoomOutput output = AdminCreateRoomOutput.builder()
+                .id(String.valueOf(beds.getId()))
+                .build();
+
+        if ("".equals(BedSize.getByCode(input.getBedSize()).toString()) ||
+                "".equals(BathroomType.getByCode(input.getBathroomType()).toString())) {
+            log.error("INVALID BED SIZE OR/AND BATHROOM TYPE");
+            log.info("End adminCreateRoom output: {}", output);
+            return output;
+        }
+
+        bedsDao.save(beds);
 
         log.info("End adminCreateRoom output: {}", output);
         return output;
+
+//exception handling
+//        if ("Best id".equals(output.getId())) {
+//            throw new RuntimeException("Hahahahaha");
+//        }
     }
 
     @Override
     public AdminUpdateInfoForRoomOutput adminUpdateInfoForRoom(AdminUpdateInfoForRoomInput input) {
         log.info("Start adminUpdateInfoForRoom input: {}", input);
 
-        AdminUpdateInfoForRoomOutput output = AdminUpdateInfoForRoomOutput.builder()
-                .id("Best id")
-                .build();
+        try {
+            UUID roomId = input.getId();
 
-        log.info("End adminUpdateInfoForRoom output: {}", output);
-        return output;
+            if (roomId == null) {
+                throw new IllegalArgumentException("Room not found with room number: " + input.getRoomNo());
+            }
+
+            roomsDao.updateRoom(roomId, input.getFloor(), input.getBathroomType(), input.getPrice());
+
+            AdminUpdateInfoForRoomOutput output = AdminUpdateInfoForRoomOutput.builder()
+                    .id(roomId)
+                    .build();
+
+            log.info("End adminUpdateInfoForRoom output: {}", output);
+            return output;
+        } catch (Exception e) {
+            log.error("Error updating room: ", e);
+            throw new RuntimeException("Failed to update room", e);
+        }
     }
 
     @Override
@@ -100,12 +145,12 @@ public class SystemServiceImpl implements SystemService {
     public DeleteRoomOutput deleteRoom(DeleteRoomInput input) {
         log.info("Start deleteRoom input: {}", input);
 
+        roomsDao.delete(input.getId());
+
         DeleteRoomOutput output = DeleteRoomOutput.builder()
                 .build();
 
         log.info("End deleteRoom output: {}", output);
         return output;
     }
-
-
 }

@@ -13,7 +13,12 @@
     <name>api</name>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.tinqinacademy</groupId>
+            <artifactId>persistance</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 

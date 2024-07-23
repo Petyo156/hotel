@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/system")
@@ -78,12 +79,23 @@ public class SystemController {
         return new ResponseEntity<>(systemService.adminCreateRoom(input), HttpStatus.OK);
     }
 
-    @PutMapping("/room/{roomNo}")
+    @PutMapping("/room/{id}")
     public ResponseEntity<AdminUpdateInfoForRoomOutput> adminUpdateInfoForRoom(
             @Valid @RequestBody AdminUpdateInfoForRoomInput input,
-            @PathVariable("roomNo") String roomNo) {
+            @PathVariable("id") UUID id) {
 
-        return new ResponseEntity<>(systemService.adminUpdateInfoForRoom(input), HttpStatus.OK);
+        AdminUpdateInfoForRoomInput adminUpdateInfoForRoomInput = input.toBuilder()
+                .id(id)
+                .build();
+
+        try {
+            AdminUpdateInfoForRoomOutput output = systemService.adminUpdateInfoForRoom(adminUpdateInfoForRoomInput);
+            return new ResponseEntity<>(output, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PatchMapping("/room/{roomNo}")
@@ -95,7 +107,7 @@ public class SystemController {
 
     @DeleteMapping("/room/{id}")
     public ResponseEntity<DeleteRoomOutput> deleteRoom(
-            @PathVariable("id") String id) {
+            @PathVariable("id") UUID id) {
         DeleteRoomInput input = DeleteRoomInput.builder()
                 .id(id)
                 .build();

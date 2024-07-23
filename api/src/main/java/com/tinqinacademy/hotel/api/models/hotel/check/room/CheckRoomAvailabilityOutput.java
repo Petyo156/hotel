@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,5 +13,5 @@ import java.util.List;
 @Builder
 @ToString
 public class CheckRoomAvailabilityOutput {
-    private List<String> ids;
+    private List<UUID> ids;
 }

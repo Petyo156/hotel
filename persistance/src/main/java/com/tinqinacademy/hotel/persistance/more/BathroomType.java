@@ -1,9 +1,8 @@
-package com.tinqinacademy.hotel.api.models.more;
+package com.tinqinacademy.hotel.persistance.more;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
 public enum BathroomType {
