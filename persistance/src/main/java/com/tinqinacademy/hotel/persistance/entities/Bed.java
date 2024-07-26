@@ -16,7 +16,7 @@ import java.util.UUID;
 @ToString
 @Entity
 @Table(name = "beds")
-public class Beds{
+public class Bed {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -25,5 +25,5 @@ public class Beds{
     private BedSize bedSize;
 
     @ManyToMany(mappedBy = "beds")
-    private List<Rooms> rooms;
+    private List<Room> rooms;
 }

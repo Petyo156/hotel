@@ -17,7 +17,7 @@ import java.util.UUID;
 @ToString
 @Entity
 @Table(name = "rooms")
-public class Rooms {
+public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -40,5 +40,5 @@ public class Rooms {
             joinColumns = @JoinColumn(name = "room_id"),
             inverseJoinColumns = @JoinColumn(name = "bed_id")
     )
-    private List<Beds> beds;
+    private List<Bed> beds;
 }

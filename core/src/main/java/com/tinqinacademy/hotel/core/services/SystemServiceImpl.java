@@ -13,10 +13,7 @@ import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomInput;
 import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomOutput;
 import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorInput;
 import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorOutput;
-import com.tinqinacademy.hotel.persistance.entities.Beds;
-import com.tinqinacademy.hotel.persistance.entities.Guests;
-import com.tinqinacademy.hotel.persistance.entities.Reservations;
-import com.tinqinacademy.hotel.persistance.entities.Rooms;
+import com.tinqinacademy.hotel.persistance.entities.*;
 import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import com.tinqinacademy.hotel.persistance.more.BedSize;
 import com.tinqinacademy.hotel.persistance.repositories.*;
@@ -26,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -48,47 +46,56 @@ public class SystemServiceImpl implements SystemService {
         this.bedsRepository = bedsRepository;
     }
 
-
     @Override
     public RegisterVisitorOutput registerVisitor(RegisterVisitorInput input) {
         log.info("Start registerVisitor input: {}", input);
 
-//        List<Reservations> existingReservations = reservationsRepository.findByCardNoId(input.getCardNoID());
-//
-//        for (Reservations reservation : existingReservations) {
-//            if (input.getStartDate().isBefore(reservation.getEndDate()) && input.getEndDate().isAfter(reservation.getStartDate())) {
-//                throw new IllegalArgumentException("The room is already reserved for the given period.");
-//            }
-//        }
-//
-//        Guests guests = Guests.builder()
-//                .IdCardNumber(input.getCardNoID())
-//                .IdCardIssueDate(input.getCardIssueDateID())
-//                .firstName(input.getFirstName())
-//                .lastName(input.getLastName())
-//                .phoneNo(input.getPhoneNo())
-//                .reservations(new ArrayList<>())
-//                .build();
-//
-//        guestsRepository.save(guests);
-//
-//        Reservations reservations = Reservations.builder()
-//                .roomId(roomsRepository.getRoomsIdByRoomNumber(input.getRoomNumber()).getId())
-//                //hardcoded
-//                .userId(usersRepository.getByEmail("lol1@abv.bg").getId())
-//                .price(roomsRepository.getRoomsIdByRoomNumber(input.getRoomNumber()).getPrice())
-//                .guests(List.of(guests))
-//                .startDate(input.getStartDate())
-//                .endDate(input.getEndDate())
-//                .build();
-//
-//        reservationsRepository.save(reservations);
-//
-//        guests.getReservations().add(reservations);
-//        guestsRepository.save(guests);
+        Room room = roomsRepository.getRoomIdByRoomNumber(input.getRoomNumber());
+        if (room == null) {
+            throw new IllegalArgumentException("Room not found");
+        }
 
-        RegisterVisitorOutput output = RegisterVisitorOutput.builder()
+        List<Reservation> existingReservations = reservationsRepository.findByRoomId(room.getId());
+
+        for (Reservation reservation : existingReservations) {
+            if (input.getStartDate().isBefore(reservation.getEndDate()) && input.getEndDate().isAfter(reservation.getStartDate())) {
+                throw new IllegalArgumentException("The room is already reserved for the given period.");
+            }
+        }
+
+        Guest guest = Guest.builder()
+                .IdCardNumber(input.getCardNoID())
+                .IdCardIssueDate(input.getCardIssueDateID())
+                .firstName(input.getFirstName())
+                .lastName(input.getLastName())
+                .phoneNo(input.getPhoneNo())
+                .IdCardValidity(input.getCardValidityID())
+                .IdCardAuthority(input.getCardIssueAuthorityID())
+                .reservations(new ArrayList<>())
                 .build();
+
+        guestsRepository.save(guest);
+
+        User user = usersRepository.getByEmail("lol1@abv.bg");
+        if (user == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+
+        Reservation reservation = Reservation.builder()
+                .roomId(room.getId())
+                .userId(user.getId())
+                .price(room.getPrice())
+                .guests(List.of(guest))
+                .startDate(input.getStartDate())
+                .endDate(input.getEndDate())
+                .build();
+
+        reservationsRepository.save(reservation);
+
+        guest.getReservations().add(reservation);
+        guestsRepository.save(guest);
+
+        RegisterVisitorOutput output = RegisterVisitorOutput.builder().build();
 
         log.info("End registerVisitor output: {}", output);
         return output;
@@ -129,23 +136,23 @@ public class SystemServiceImpl implements SystemService {
             throw new IllegalArgumentException("BathroomType is UNKNOWN");
         }
 
-        Beds beds = Beds.builder()
+        Bed bed = Bed.builder()
                 .bedSize(BedSize.getByCode(input.getBedSize()))
                 .build();
-        bedsRepository.save(beds);
+        bedsRepository.save(bed);
 
-        Rooms rooms = Rooms.builder()
+        Room room = Room.builder()
                 .bathroomType(BathroomType.getByCode(input.getBathroomType()))
                 .floor(input.getFloor())
                 .price(input.getPrice())
                 .roomNumber(input.getRoomNumber())
-                .beds(List.of(beds))
+                .beds(List.of(bed))
                 .build();
 
-        roomsRepository.save(rooms);
+        roomsRepository.save(room);
 
         AdminCreateRoomOutput output = AdminCreateRoomOutput.builder()
-                .id(rooms.getId())
+                .id(room.getId())
                 .build();
 
         log.info("End adminCreateRoom output: {}", output);
@@ -166,19 +173,17 @@ public class SystemServiceImpl implements SystemService {
             throw new IllegalArgumentException("Room with id " + roomId + " doesn't exist!");
         }
 
-        Rooms currentRoom = roomsRepository.getRoomsById(roomId);
+        Room currentRoom = roomsRepository.getRoomById(roomId);
 
-
-
-        Rooms rooms = Rooms.builder()
-//                .beds(currentRoom.getBeds().add())
+        Room room = Room.builder()
+         //      .beds(currentRoom.getBeds())
                 .roomNumber(currentRoom.getRoomNumber())
                 .price(input.getPrice())
                 .floor(input.getFloor())
                 .bathroomType(BathroomType.getByCode(input.getBathroomType()))
                 .build();
 
-        roomsRepository.save(rooms);
+        roomsRepository.save(room);
 
         AdminUpdateInfoForRoomOutput output = AdminUpdateInfoForRoomOutput.builder()
                 .id(roomId)
@@ -203,6 +208,13 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public DeleteRoomOutput deleteRoom(DeleteRoomInput input) {
         log.info("Start deleteRoom input: {}", input);
+
+        Optional<Room> roomsOptional = roomsRepository.findById(input.getId());
+        if(roomsOptional.isEmpty()){
+            throw new IllegalArgumentException("Room with ID " + input.getId() + " doesn't exist!");
+        }
+
+        roomsRepository.delete(roomsOptional.get());
 
         DeleteRoomOutput output = DeleteRoomOutput.builder()
                 .build();

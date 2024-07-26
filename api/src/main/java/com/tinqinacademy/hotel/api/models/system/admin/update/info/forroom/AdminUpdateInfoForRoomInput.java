@@ -1,11 +1,10 @@
 package com.tinqinacademy.hotel.api.models.system.admin.update.info.forroom;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.tinqinacademy.hotel.persistance.entities.Beds;
+import com.tinqinacademy.hotel.persistance.entities.Bed;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -26,7 +25,7 @@ public class AdminUpdateInfoForRoomInput {
     private Integer bedCount;
 
     @NotNull(message = "bedSize can't be null!")
-    private List<Beds> bedSizes;
+    private List<Bed> bedSizes;
 
     @NotNull(message = "bathroomType can't be null!")
     private String bathroomType;

@@ -10,8 +10,8 @@ import com.tinqinacademy.hotel.api.models.hotel.check.room.CheckRoomAvailability
 import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedRoomInput;
 import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedRoomOutput;
 
-import com.tinqinacademy.hotel.persistance.entities.Reservations;
-import com.tinqinacademy.hotel.persistance.entities.Rooms;
+import com.tinqinacademy.hotel.persistance.entities.Reservation;
+import com.tinqinacademy.hotel.persistance.entities.Room;
 import com.tinqinacademy.hotel.persistance.more.DateUtils;
 import com.tinqinacademy.hotel.persistance.repositories.GuestsRepository;
 import com.tinqinacademy.hotel.persistance.repositories.ReservationsRepository;
@@ -64,17 +64,17 @@ public class HotelServiceImpl implements HotelService {
             throw new IllegalArgumentException("No room with uuid " + uuid + " exists");
         }
 
-        Rooms room = roomsRepository.findById(uuid).get();
+        Room room = roomsRepository.findById(uuid).get();
 
         String bedSizes = room.getBeds().stream()
                 .map(b -> b.getBedSize().toString())
                 .collect(Collectors.joining(", "));
 
 
-        List<Reservations> reservations = reservationsRepository.findByRoomId(input.getRoomId());
+        List<Reservation> reservations = reservationsRepository.findByRoomId(input.getRoomId());
         List<LocalDate> datesOccupied = new ArrayList<>();
 
-        for (Reservations res : reservations) {
+        for (Reservation res : reservations) {
             datesOccupied.addAll(DateUtils.getDatesBetween(res.getStartDate(), res.getEndDate()));
         }
 
@@ -96,7 +96,7 @@ public class HotelServiceImpl implements HotelService {
         log.info("Start bookSpecifiedRoom input: {}", input);
 
         UUID roomId = input.getRoomId();
-        Rooms room = roomsRepository.findById(roomId).orElseThrow(() ->
+        Room room = roomsRepository.findById(roomId).orElseThrow(() ->
                 new IllegalArgumentException("No room with uuid " + roomId + " exists"));
 
         boolean isAvailable = reservationsRepository.findAllByRoomIdAndStartDateBeforeAndEndDateAfter(
@@ -106,7 +106,7 @@ public class HotelServiceImpl implements HotelService {
             throw new IllegalArgumentException("Room is not available for the specified dates");
         }
 
-        Reservations reservation = Reservations.builder()
+        Reservation reservation = Reservation.builder()
                 .roomId(roomId)
                 .userId(input.getUserId())
                 .startDate(input.getStartDate())

@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
-                .httpStatus(HttpStatus.I_AM_A_TEAPOT)
+                .httpStatus(HttpStatus.BAD_REQUEST)
                 .build();
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);

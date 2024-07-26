@@ -17,7 +17,7 @@ import java.util.UUID;
 @ToString
 @Entity
 @Table(name = "guests")
-public class Guests {
+public class Guest {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -47,5 +47,5 @@ public class Guests {
     private String phoneNo;
 
     @ManyToMany(mappedBy = "guests")
-    private List<Reservations> reservations;
+    private List<Reservation> reservations;
 }

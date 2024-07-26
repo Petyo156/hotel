@@ -1,7 +1,6 @@
 package com.tinqinacademy.hotel.persistance.repositories;
 
-import com.tinqinacademy.hotel.persistance.entities.Beds;
-import com.tinqinacademy.hotel.persistance.entities.Reservations;
+import com.tinqinacademy.hotel.persistance.entities.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,8 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface ReservationsRepository extends JpaRepository<Reservations, UUID> {
-    List<Reservations> findAllByRoomIdAndStartDateBeforeAndEndDateAfter(UUID roomId, LocalDate endDate, LocalDate startDate);
-    List<Reservations> findByRoomId(UUID roomId);
-//    List<Reservations> findByCardNoId(String cardNoId);
+public interface ReservationsRepository extends JpaRepository<Reservation, UUID> {
+    List<Reservation> findAllByRoomIdAndStartDateBeforeAndEndDateAfter(UUID roomId, LocalDate endDate, LocalDate startDate);
+    List<Reservation> findByRoomId(UUID roomId);
 }
