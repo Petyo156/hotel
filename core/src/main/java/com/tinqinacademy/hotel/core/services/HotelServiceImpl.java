@@ -10,16 +10,18 @@ import com.tinqinacademy.hotel.api.models.hotel.check.room.CheckRoomAvailability
 import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedRoomInput;
 import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedRoomOutput;
 
-import com.tinqinacademy.hotel.persistance.daos.BedsDao;
-import com.tinqinacademy.hotel.persistance.entities.Beds;
-import com.tinqinacademy.hotel.persistance.more.BathroomType;
-import com.tinqinacademy.hotel.persistance.more.BedSize;
+import com.tinqinacademy.hotel.persistance.entities.Reservations;
+import com.tinqinacademy.hotel.persistance.entities.Rooms;
+import com.tinqinacademy.hotel.persistance.more.DateUtils;
+import com.tinqinacademy.hotel.persistance.repositories.GuestsRepository;
+import com.tinqinacademy.hotel.persistance.repositories.ReservationsRepository;
+import com.tinqinacademy.hotel.persistance.repositories.RoomsRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,25 +30,23 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HotelServiceImpl implements HotelService {
 
-    private final BedsDao bedsDao;
+    private final RoomsRepository roomsRepository;
+    private final ReservationsRepository reservationsRepository;
+    private final GuestsRepository guestsRepository;
 
     @Autowired
-    public HotelServiceImpl(BedsDao bedsDao) {
-        this.bedsDao = bedsDao;
+    public HotelServiceImpl(RoomsRepository roomsRepository, ReservationsRepository reservationsRepository, GuestsRepository guestsRepository) {
+        this.roomsRepository = roomsRepository;
+        this.reservationsRepository = reservationsRepository;
+        this.guestsRepository = guestsRepository;
     }
 
     @Override
     public CheckRoomAvailabilityOutput checkRoomAvailability(CheckRoomAvailabilityInput input) {
         log.info("Start checkRoomAvailability input: {}", input);
 
-        //logic
-        List<UUID> availableRoomIds = bedsDao.findAll().stream()
-                .filter(bed -> bedsDao.isRoomAvailable(bed.getId(), input.getStartDate(), input.getEndDate()))
-                .map(Beds::getId)
-                .collect(Collectors.toList());
-
         CheckRoomAvailabilityOutput output = CheckRoomAvailabilityOutput.builder()
-                .ids(availableRoomIds)
+                .ids(List.of(UUID.randomUUID(), UUID.randomUUID()))
                 .build();
 
         log.info("End checkRoomAvailability output: {}", output);
@@ -57,14 +57,34 @@ public class HotelServiceImpl implements HotelService {
     public BasicInfoForRoomOutput basicInfoForRoom(BasicInfoForRoomInput input) {
         log.info("Start basicInfoForRoom input: {}", input);
 
-        BasicInfoForRoomOutput output = BasicInfoForRoomOutput.builder()
-                .roomId(input.getRoomId())
-                .floor(5)
-                .price(BigDecimal.TWO)
-                .bedSize(BedSize.KINGSIZE.toString())
-                .bathroomType(BathroomType.PRIVATE.toString())
-                .bedCount(5)
-                .datesOccupied(List.of(LocalDate.of(2020, 1, 8)))
+        BasicInfoForRoomOutput output = null;
+
+        UUID uuid = input.getRoomId();
+        if (roomsRepository.findById(uuid).isEmpty()) {
+            throw new IllegalArgumentException("No room with uuid " + uuid + " exists");
+        }
+
+        Rooms room = roomsRepository.findById(uuid).get();
+
+        String bedSizes = room.getBeds().stream()
+                .map(b -> b.getBedSize().toString())
+                .collect(Collectors.joining(", "));
+
+
+        List<Reservations> reservations = reservationsRepository.findByRoomId(input.getRoomId());
+        List<LocalDate> datesOccupied = new ArrayList<>();
+
+        for (Reservations res : reservations) {
+            datesOccupied.addAll(DateUtils.getDatesBetween(res.getStartDate(), res.getEndDate()));
+        }
+
+        output = BasicInfoForRoomOutput.builder()
+                .roomId(room.getId())
+                .floor(room.getFloor())
+                .price(room.getPrice())
+                .bedSize(bedSizes)
+                .bathroomType(String.valueOf(room.getBathroomType()))
+                .datesOccupied(datesOccupied)
                 .build();
 
         log.info("End basicInfoForRoom output: {}", output);
@@ -74,6 +94,28 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public BookSpecifiedRoomOutput bookSpecifiedRoom(BookSpecifiedRoomInput input) {
         log.info("Start bookSpecifiedRoom input: {}", input);
+
+        UUID roomId = input.getRoomId();
+        Rooms room = roomsRepository.findById(roomId).orElseThrow(() ->
+                new IllegalArgumentException("No room with uuid " + roomId + " exists"));
+
+        boolean isAvailable = reservationsRepository.findAllByRoomIdAndStartDateBeforeAndEndDateAfter(
+                roomId, input.getEndDate(), input.getStartDate()).isEmpty();
+
+        if (!isAvailable) {
+            throw new IllegalArgumentException("Room is not available for the specified dates");
+        }
+
+        Reservations reservation = Reservations.builder()
+                .roomId(roomId)
+                .userId(input.getUserId())
+                .startDate(input.getStartDate())
+                .endDate(input.getEndDate())
+                .price(room.getPrice())
+                .guests(List.of())
+                .build();
+
+        reservationsRepository.save(reservation);
 
         BookSpecifiedRoomOutput output = BookSpecifiedRoomOutput.builder()
                 .build();
@@ -85,6 +127,7 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public UnbookBookedRoomOutput unbookBookedRoom(UnbookBookedRoomInput input) {
         log.info("Start unbookBookedRoom input: {}", input);
+
 
         UnbookBookedRoomOutput output = UnbookBookedRoomOutput.builder()
                 .build();

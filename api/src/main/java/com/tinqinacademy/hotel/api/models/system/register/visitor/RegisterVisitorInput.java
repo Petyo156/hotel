@@ -15,6 +15,9 @@ import java.util.List;
 @Builder
 @ToString
 public class RegisterVisitorInput {
+    @NotNull(message = "roomNo can't be null!")
+    private String roomNumber;
+
     @NotNull(message = "visitorsData can't be null!")
     private List<String> visitorsData;
 

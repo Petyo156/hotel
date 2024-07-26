@@ -4,6 +4,8 @@ package com.tinqinacademy.hotel.api.models.system.admin.create.room;
 import jakarta.validation.constraints.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -11,10 +13,6 @@ import lombok.*;
 @Builder
 @ToString
 public class AdminCreateRoomInput {
-    @NotNull(message = "bedCount can't be null!")
-    @Min(1)
-    @Max(10)
-    private Integer bedCount;
 
     @NotNull(message = "bedSize can't be null!")
     private String bedSize;
@@ -28,9 +26,9 @@ public class AdminCreateRoomInput {
 
     @NotNull(message = "roomNo can't be null!")
     @Size(min = 3, max = 3, message = "roomNo - 3 chars long")
-    private String roomNo;
+    private String roomNumber;
 
     @NotNull(message = "roomNo can't be null!")
     @PositiveOrZero
-    private Double price;
+    private BigDecimal price;
 }

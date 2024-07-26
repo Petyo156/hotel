@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,11 +15,10 @@ import java.util.List;
 @Builder
 @ToString
 public class BasicInfoForRoomOutput {
-    private String roomId;
+    private UUID roomId;
     private BigDecimal price;
     private Integer floor;
     private String bedSize;
     private String bathroomType;
-    private Integer bedCount;
     private List<LocalDate> datesOccupied;
 }

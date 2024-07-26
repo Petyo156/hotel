@@ -2,6 +2,8 @@ package com.tinqinacademy.hotel.api.models.system.admin.create.room;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -9,5 +11,5 @@ import lombok.*;
 @Builder
 @ToString
 public class AdminCreateRoomOutput {
-    private String id;
+    private UUID id;
 }

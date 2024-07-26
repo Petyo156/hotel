@@ -1,7 +1,11 @@
 package com.tinqinacademy.hotel.persistance.entities;
 
 import com.tinqinacademy.hotel.persistance.more.BedSize;
+import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 import lombok.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
@@ -10,8 +14,16 @@ import java.util.UUID;
 @Setter
 @Builder
 @ToString
-public class Beds implements Entity{
+@Entity
+@Table(name = "beds")
+public class Beds{
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    @Column(name = "bed_size", nullable = false)
     private BedSize bedSize;
-    private Integer bedCount;
+
+    @ManyToMany(mappedBy = "beds")
+    private List<Rooms> rooms;
 }

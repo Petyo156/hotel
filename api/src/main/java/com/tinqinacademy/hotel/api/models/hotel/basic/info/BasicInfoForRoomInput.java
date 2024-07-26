@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -13,5 +15,5 @@ import lombok.*;
 @ToString
 public class BasicInfoForRoomInput {
     @NotNull(message = "id can't be null!")
-    private String roomId;
+    private UUID roomId;
 }

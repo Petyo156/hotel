@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/hotel")
@@ -55,7 +56,7 @@ public class HotelController {
     @GetMapping("/{roomId}")
     public ResponseEntity<BasicInfoForRoomOutput> basicInfoForRoom(
             @PathVariable("roomId")
-            @Size(min = 1, max = 5, message = "id should be 1-5 chars long") String roomId) {
+            UUID roomId) {
 
         BasicInfoForRoomInput input = BasicInfoForRoomInput.builder()
                 .roomId(roomId)
@@ -67,7 +68,7 @@ public class HotelController {
     @PostMapping("/{roomId}")
     public ResponseEntity<BookSpecifiedRoomOutput> bookSpecifiedRoom(
             @Valid @RequestBody BookSpecifiedRoomInput input,
-            @PathVariable("roomId") String roomId) {
+            @PathVariable("roomId") UUID roomId) {
 
         BookSpecifiedRoomInput bookSpecifiedRoomInput = input.toBuilder()
                 .roomId(roomId)

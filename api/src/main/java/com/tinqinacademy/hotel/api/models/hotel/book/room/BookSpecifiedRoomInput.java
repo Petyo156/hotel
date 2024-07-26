@@ -8,6 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +18,9 @@ import java.util.List;
 @ToString
 public class BookSpecifiedRoomInput {
     @JsonIgnore
-    private String roomId;
+    private UUID roomId;
+
+    private UUID userId;
 
     @FutureOrPresent
     private LocalDate startDate;
