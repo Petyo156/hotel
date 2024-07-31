@@ -18,9 +18,9 @@ import java.util.UUID;
 @ToString
 public class BookSpecifiedRoomInput {
     @JsonIgnore
-    private UUID roomId;
+    private String roomId;
 
-    private UUID userId;
+    private String userId;
 
     @FutureOrPresent
     private LocalDate startDate;

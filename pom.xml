@@ -84,6 +84,12 @@
 		<!--			<version>3.3.1</version>-->
 		<!--		</dependency>-->
 
+		<dependency>
+			<groupId>com.github.java-json-tools</groupId>
+			<artifactId>json-patch</artifactId>
+			<version>1.13</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

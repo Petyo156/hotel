@@ -15,5 +15,5 @@ import java.util.UUID;
 @ToString
 public class BasicInfoForRoomInput {
     @NotNull(message = "id can't be null!")
-    private UUID roomId;
+    private String roomId;
 }

@@ -19,13 +19,10 @@ import java.util.UUID;
 @ToString
 public class AdminUpdateInfoForRoomInput {
     @JsonIgnore
-    private UUID id;
-
-    @PositiveOrZero
-    private Integer bedCount;
+    private String id;
 
     @NotNull(message = "bedSize can't be null!")
-    private List<Bed> bedSizes;
+    private List<String> bedSizes;
 
     @NotNull(message = "bathroomType can't be null!")
     private String bathroomType;

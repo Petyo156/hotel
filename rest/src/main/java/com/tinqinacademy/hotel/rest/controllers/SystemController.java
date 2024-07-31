@@ -14,6 +14,7 @@ import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomOutput;
 import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorInput;
 import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorOutput;
 import com.tinqinacademy.hotel.core.services.SystemService;
+import com.tinqinacademy.hotel.rest.controllers.config.RestApiMapping;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/system")
 public class SystemController {
 
     private SystemService systemService;
@@ -38,14 +38,14 @@ public class SystemController {
         this.objectMapper = objectMapper;
     }
 
-    @PostMapping("/register")
+    @PostMapping(RestApiMapping.POST_registerVisitor_PATH)
     public ResponseEntity<RegisterVisitorOutput> registerVisitor(
             @Valid @RequestBody RegisterVisitorInput registerVisitorInput) {
 
         return new ResponseEntity<>(systemService.registerVisitor(registerVisitorInput), HttpStatus.OK);
     }
 
-    @GetMapping("/register")
+    @GetMapping(RestApiMapping.GET_adminReportVisitor_PATH)
     public ResponseEntity<AdminReportVisitorOutput> adminReportVisitor(
             @RequestParam("visitorsData") List<String> visitorsData,
             @RequestParam("startDate") LocalDate startDate,
@@ -73,16 +73,16 @@ public class SystemController {
         return new ResponseEntity<>(systemService.adminReport(input), HttpStatus.OK);
     }
 
-    @PostMapping("/room")
+    @PostMapping(RestApiMapping.POST_adminCreateRoom_PATH)
     public ResponseEntity<AdminCreateRoomOutput> adminCreateRoom(
             @Valid @RequestBody AdminCreateRoomInput input) {
         return new ResponseEntity<>(systemService.adminCreateRoom(input), HttpStatus.OK);
     }
 
-    @PutMapping("/room/{id}")
+    @PutMapping(RestApiMapping.PUT_adminUpdateInfoForRoom_PATH)
     public ResponseEntity<AdminUpdateInfoForRoomOutput> adminUpdateInfoForRoom(
             @Valid @RequestBody AdminUpdateInfoForRoomInput input,
-            @PathVariable("id") UUID id) {
+            @PathVariable("id") String id) {
 
         AdminUpdateInfoForRoomInput adminUpdateInfoForRoomInput = input.toBuilder()
                 .id(id)
@@ -98,16 +98,17 @@ public class SystemController {
         }
     }
 
-    @PatchMapping("/room/{roomNo}")
+    @PatchMapping(value = RestApiMapping.PATCH_adminPartialUpdate_PATH, consumes = "application/json-patch+json")
     public ResponseEntity<AdminPartialUpdateOutput> adminPartialUpdate(
-            @Valid @RequestBody AdminPartialUpdateInput input) {
+            @Valid @RequestBody AdminPartialUpdateInput input,
+            @PathVariable("id") String id) {
 
-        return new ResponseEntity<>(systemService.adminPartialUpdate(input), HttpStatus.OK);
+        return new ResponseEntity<>(systemService.adminPartialUpdate(input, id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/room/{id}")
+    @DeleteMapping(RestApiMapping.DELETE_deleteRoom_PATH)
     public ResponseEntity<DeleteRoomOutput> deleteRoom(
-            @PathVariable("id") UUID id) {
+            @PathVariable("id") String id) {
         DeleteRoomInput input = DeleteRoomInput.builder()
                 .id(id)
                 .build();

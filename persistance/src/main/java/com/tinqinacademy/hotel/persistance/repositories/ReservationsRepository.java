@@ -6,10 +6,13 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface ReservationsRepository extends JpaRepository<Reservation, UUID> {
     List<Reservation> findAllByRoomIdAndStartDateBeforeAndEndDateAfter(UUID roomId, LocalDate endDate, LocalDate startDate);
     List<Reservation> findByRoomId(UUID roomId);
+    List<Reservation> findByRoomIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(UUID roomId, LocalDate startDate, LocalDate endDate);
+    Optional<Reservation> findByStartDateAndEndDate(LocalDate startDate, LocalDate endDate);
 }

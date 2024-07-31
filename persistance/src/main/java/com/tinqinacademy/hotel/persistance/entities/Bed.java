@@ -21,9 +21,7 @@ public class Bed {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "bed_size", nullable = false)
     private BedSize bedSize;
-
-    @ManyToMany(mappedBy = "beds")
-    private List<Room> rooms;
 }

@@ -18,7 +18,7 @@ public class BasicInfoForRoomOutput {
     private UUID roomId;
     private BigDecimal price;
     private Integer floor;
-    private String bedSize;
+    private List<String> bedSize;
     private String bathroomType;
     private List<LocalDate> datesOccupied;
 }

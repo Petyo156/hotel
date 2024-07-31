@@ -15,5 +15,5 @@ import java.util.UUID;
 @ToString
 public class DeleteRoomInput {
     @JsonIgnore
-    private UUID id;
+    private String id;
 }

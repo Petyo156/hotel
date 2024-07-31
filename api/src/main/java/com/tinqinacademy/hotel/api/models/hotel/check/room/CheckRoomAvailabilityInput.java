@@ -19,11 +19,6 @@ public class CheckRoomAvailabilityInput {
     @FutureOrPresent
     private LocalDate endDate;
 
-    @NotNull(message = "bedCount can't be null!")
-    @Min(1)
-    @Max(10)
-    private Integer bedCount;
-
     @NotNull(message = "bedSize can't be null!")
     private String bedSize;
 

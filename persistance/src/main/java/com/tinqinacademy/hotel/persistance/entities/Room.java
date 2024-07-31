@@ -13,7 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-@Builder
+@Builder(toBuilder = true)
 @ToString
 @Entity
 @Table(name = "rooms")
@@ -25,6 +25,7 @@ public class Room {
     @Column(name = "floor", nullable = false)
     private Integer floor;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "bathroom_type", nullable = false)
     private BathroomType bathroomType;
 

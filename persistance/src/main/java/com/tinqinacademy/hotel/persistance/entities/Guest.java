@@ -29,7 +29,7 @@ public class Guest {
     private String lastName;
 
     @Column(name = "birth_date", nullable = false)
-    private Date birthdate;
+    private LocalDate birthdate;
 
     @Column(name = "id_card_number", nullable = false)
     private String IdCardNumber;
@@ -45,7 +45,4 @@ public class Guest {
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNo;
-
-    @ManyToMany(mappedBy = "guests")
-    private List<Reservation> reservations;
 }

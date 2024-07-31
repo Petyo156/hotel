@@ -38,15 +38,23 @@ public class CustomApplicationRunner implements ApplicationRunner {
         if (bedsRepository.count() == 0) {
             bedsRepository.save(Bed.builder()
                     .id(UUID.randomUUID())
-                    .bedSize(BedSize.DOUBLE)
-                    .build());
-            bedsRepository.save(Bed.builder()
-                    .id(UUID.randomUUID())
                     .bedSize(BedSize.SINGLE)
                     .build());
             bedsRepository.save(Bed.builder()
                     .id(UUID.randomUUID())
+                    .bedSize(BedSize.DOUBLE)
+                    .build());
+            bedsRepository.save(Bed.builder()
+                    .id(UUID.randomUUID())
+                    .bedSize(BedSize.SMALLDOUBLE)
+                    .build());
+            bedsRepository.save(Bed.builder()
+                    .id(UUID.randomUUID())
                     .bedSize(BedSize.KINGSIZE)
+                    .build());
+            bedsRepository.save(Bed.builder()
+                    .id(UUID.randomUUID())
+                    .bedSize(BedSize.QUEENSIZE)
                     .build());
         }
 

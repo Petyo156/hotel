@@ -5,6 +5,7 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 public class AdminCreateRoomInput {
 
     @NotNull(message = "bedSize can't be null!")
-    private String bedSize;
+    private List<String> bedSizes;
 
     @NotNull(message = "bathroomType can't be null!")
     private String bathroomType;

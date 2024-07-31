@@ -12,6 +12,7 @@ import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedR
 
 import com.tinqinacademy.hotel.persistance.entities.Reservation;
 import com.tinqinacademy.hotel.persistance.entities.Room;
+import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import com.tinqinacademy.hotel.persistance.more.DateUtils;
 import com.tinqinacademy.hotel.persistance.repositories.GuestsRepository;
 import com.tinqinacademy.hotel.persistance.repositories.ReservationsRepository;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,46 +34,50 @@ public class HotelServiceImpl implements HotelService {
 
     private final RoomsRepository roomsRepository;
     private final ReservationsRepository reservationsRepository;
-    private final GuestsRepository guestsRepository;
 
     @Autowired
-    public HotelServiceImpl(RoomsRepository roomsRepository, ReservationsRepository reservationsRepository, GuestsRepository guestsRepository) {
+    public HotelServiceImpl(RoomsRepository roomsRepository, ReservationsRepository reservationsRepository) {
         this.roomsRepository = roomsRepository;
         this.reservationsRepository = reservationsRepository;
-        this.guestsRepository = guestsRepository;
     }
 
+    //works
     @Override
     public CheckRoomAvailabilityOutput checkRoomAvailability(CheckRoomAvailabilityInput input) {
         log.info("Start checkRoomAvailability input: {}", input);
 
+        List<Room> rooms = roomsRepository.findAvailableRooms(input.getStartDate(), input.getEndDate());
+
+        List<UUID> availableRoomIdsList = rooms.stream()
+                .map(Room::getId)
+                .toList();
+
         CheckRoomAvailabilityOutput output = CheckRoomAvailabilityOutput.builder()
-                .ids(List.of(UUID.randomUUID(), UUID.randomUUID()))
+                .ids(availableRoomIdsList)
                 .build();
 
         log.info("End checkRoomAvailability output: {}", output);
         return output;
     }
 
+    //works
     @Override
     public BasicInfoForRoomOutput basicInfoForRoom(BasicInfoForRoomInput input) {
         log.info("Start basicInfoForRoom input: {}", input);
 
         BasicInfoForRoomOutput output = null;
 
-        UUID uuid = input.getRoomId();
+        UUID uuid = UUID.fromString(input.getRoomId());
         if (roomsRepository.findById(uuid).isEmpty()) {
             throw new IllegalArgumentException("No room with uuid " + uuid + " exists");
         }
 
         Room room = roomsRepository.findById(uuid).get();
 
-        String bedSizes = room.getBeds().stream()
-                .map(b -> b.getBedSize().toString())
-                .collect(Collectors.joining(", "));
+        List<String> bedSizes = room.getBeds().stream()
+                .map(b -> b.getBedSize().toString()).collect(Collectors.toList());
 
-
-        List<Reservation> reservations = reservationsRepository.findByRoomId(input.getRoomId());
+        List<Reservation> reservations = reservationsRepository.findByRoomId(UUID.fromString(input.getRoomId()));
         List<LocalDate> datesOccupied = new ArrayList<>();
 
         for (Reservation res : reservations) {
@@ -91,11 +97,12 @@ public class HotelServiceImpl implements HotelService {
         return output;
     }
 
+    //works
     @Override
     public BookSpecifiedRoomOutput bookSpecifiedRoom(BookSpecifiedRoomInput input) {
         log.info("Start bookSpecifiedRoom input: {}", input);
 
-        UUID roomId = input.getRoomId();
+        UUID roomId = UUID.fromString(input.getRoomId());
         Room room = roomsRepository.findById(roomId).orElseThrow(() ->
                 new IllegalArgumentException("No room with uuid " + roomId + " exists"));
 
@@ -108,7 +115,7 @@ public class HotelServiceImpl implements HotelService {
 
         Reservation reservation = Reservation.builder()
                 .roomId(roomId)
-                .userId(input.getUserId())
+                .userId(UUID.fromString(input.getUserId()))
                 .startDate(input.getStartDate())
                 .endDate(input.getEndDate())
                 .price(room.getPrice())
@@ -124,10 +131,17 @@ public class HotelServiceImpl implements HotelService {
         return output;
     }
 
+    //works
     @Override
     public UnbookBookedRoomOutput unbookBookedRoom(UnbookBookedRoomInput input) {
         log.info("Start unbookBookedRoom input: {}", input);
 
+        Optional<Reservation> reservationOptional = reservationsRepository.findById(UUID.fromString(input.getBookingId()));
+        if (reservationOptional.isEmpty()) {
+            throw new IllegalArgumentException("Reservation with ID " + input.getBookingId() + " doesn't exist!");
+        }
+
+        reservationsRepository.delete(reservationOptional.get());
 
         UnbookBookedRoomOutput output = UnbookBookedRoomOutput.builder()
                 .build();

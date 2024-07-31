@@ -10,6 +10,7 @@ import com.tinqinacademy.hotel.api.models.hotel.check.room.CheckRoomAvailability
 import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedRoomInput;
 import com.tinqinacademy.hotel.api.models.hotel.unbook.booked.room.UnbookBookedRoomOutput;
 import com.tinqinacademy.hotel.core.services.HotelService;
+import com.tinqinacademy.hotel.rest.controllers.config.RestApiMapping;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Size;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,6 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/hotel")
 public class HotelController {
     //only in post put patch POJOS are needed validations
 
@@ -34,11 +34,10 @@ public class HotelController {
         this.objectMapper = objectMapper;
     }
 
-    @GetMapping("/rooms")
+    @GetMapping(RestApiMapping.GET_checkAvailability_PATH)
     public ResponseEntity<CheckRoomAvailabilityOutput> checkAvailability(
             @RequestParam("startDate") LocalDate startDate,
             @RequestParam("endDate") LocalDate endDate,
-            @RequestParam("bedCount") Integer bedCount,
             @RequestParam("bedSize") String bedSize,
             @RequestParam("bathroomType") String bathroomType) {
 
@@ -46,38 +45,37 @@ public class HotelController {
                 .endDate(endDate)
                 .startDate(startDate)
                 .bathroomType(bathroomType)
-                .bedCount(bedCount)
                 .bedSize(bedSize)
                 .build();
 
         return new ResponseEntity<>(hotelService.checkRoomAvailability(input), HttpStatus.OK);
     }
 
-    @GetMapping("/{roomId}")
+    @GetMapping(RestApiMapping.GET_basicInfoForRoom_PATH)
     public ResponseEntity<BasicInfoForRoomOutput> basicInfoForRoom(
             @PathVariable("roomId")
-            UUID roomId) {
+            String roomId) {
 
         BasicInfoForRoomInput input = BasicInfoForRoomInput.builder()
-                .roomId(roomId)
+                .roomId(String.valueOf(roomId))
                 .build();
 
         return new ResponseEntity<>(hotelService.basicInfoForRoom(input), HttpStatus.OK);
     }
 
-    @PostMapping("/{roomId}")
+    @PostMapping(RestApiMapping.POST_bookSpecifiedRoom_PATH)
     public ResponseEntity<BookSpecifiedRoomOutput> bookSpecifiedRoom(
             @Valid @RequestBody BookSpecifiedRoomInput input,
-            @PathVariable("roomId") UUID roomId) {
+            @PathVariable("roomId") String roomId) {
 
         BookSpecifiedRoomInput bookSpecifiedRoomInput = input.toBuilder()
-                .roomId(roomId)
+                .roomId(String.valueOf(roomId))
                 .build();
 
         return new ResponseEntity<>(hotelService.bookSpecifiedRoom(bookSpecifiedRoomInput), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{bookingId}")
+    @DeleteMapping(RestApiMapping.DELETE_unbookBookedRoom_PATH)
     public ResponseEntity<UnbookBookedRoomOutput> unbookBookedRoom(
             @PathVariable String bookingId) {
 
