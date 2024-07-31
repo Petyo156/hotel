@@ -24,6 +24,7 @@ import com.tinqinacademy.hotel.persistance.more.BedSize;
 import com.tinqinacademy.hotel.persistance.repositories.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -43,16 +44,19 @@ public class SystemServiceImpl implements SystemService {
     private final BedsRepository bedsRepository;
     private final ObjectMapper objectMapper;
 
+    private final ConversionService conversionService;
+
     @Autowired
     public SystemServiceImpl(RoomsRepository roomsRepository, GuestsRepository guestsRepository,
                              ReservationsRepository reservationsRepository, UsersRepository usersRepository,
-                             BedsRepository bedsRepository, ObjectMapper objectMapper) {
+                             BedsRepository bedsRepository, ObjectMapper objectMapper, ConversionService conversionService) {
         this.roomsRepository = roomsRepository;
         this.guestsRepository = guestsRepository;
         this.reservationsRepository = reservationsRepository;
         this.usersRepository = usersRepository;
         this.bedsRepository = bedsRepository;
         this.objectMapper = objectMapper;
+        this.conversionService = conversionService;
     }
 
     //works
@@ -61,30 +65,13 @@ public class SystemServiceImpl implements SystemService {
         log.info("Start registerVisitor input: {}", input);
 
         Optional<Room> room = roomsRepository.findByRoomNumber(input.getRoomNumber());
-        if (room.isEmpty()) {
-            throw new IllegalArgumentException("Room not found");
-        }
+        throwIfRoomDoesntExist(room);
 
         Optional<Reservation> reservation = reservationsRepository.findByStartDateAndEndDate
                 (input.getStartDate(), input.getEndDate());
-        if (reservation.isEmpty()) {
-            throw new IllegalArgumentException("Reservation not found");
-        }
+        throwIfReservationDoesntExist(reservation);
 
-        List<Guest> guestList = new ArrayList<>();
-        for (RegisterVisitorsDataInput dataInput : input.getRegisterVisitorsDataInputList()) {
-            Guest guest = Guest.builder()
-                    .IdCardNumber(dataInput.getCardNoID())
-                    .IdCardIssueDate(dataInput.getCardIssueDateID())
-                    .firstName(dataInput.getFirstName())
-                    .lastName(dataInput.getLastName())
-                    .phoneNo(dataInput.getPhoneNo())
-                    .IdCardValidity(dataInput.getCardValidityID())
-                    .IdCardAuthority(dataInput.getCardIssueAuthorityID())
-                    .birthdate(dataInput.getBirthDate())
-                    .build();
-            guestList.add(guest);
-        }
+        List<Guest> guestList = getAllGuestsForReservation(input);
 
         guestsRepository.saveAll(guestList);
 
@@ -92,14 +79,22 @@ public class SystemServiceImpl implements SystemService {
         reservationsRepository.save(reservation.get());
 
         Optional<User> user = usersRepository.findByEmail("lol1@abv.bg");
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
-        }
+        throwIfUserDoesntExist(user);
 
         RegisterVisitorOutput output = RegisterVisitorOutput.builder().build();
 
         log.info("End registerVisitor output: {}", output);
         return output;
+    }
+
+    private List<Guest> getAllGuestsForReservation(RegisterVisitorInput input) {
+        List<Guest> guestList = new ArrayList<>();
+        for (RegisterVisitorsDataInput dataInput : input.getRegisterVisitorsDataInputList()) {
+            Guest guest = conversionService.convert(dataInput, Guest.GuestBuilder.class)
+                    .build();
+            guestList.add(guest);
+        }
+        return guestList;
     }
 
     //-not implemented
@@ -131,24 +126,12 @@ public class SystemServiceImpl implements SystemService {
     public AdminCreateRoomOutput adminCreateRoom(AdminCreateRoomInput input) {
         log.info("Start adminCreateRoom input: {}", input);
 
-        List<BedSize> beds = new ArrayList<>();
-        for (String bedString : input.getBedSizes()) {
-            if (BedSize.getByCode(bedString).equals(BedSize.UNKNOWN)) {
-                throw new IllegalArgumentException("Invalid bedsize - " + bedString);
-            }
-            beds.add(BedSize.getByCode(bedString));
-        }
-        List<Bed> bedList  = bedsRepository.findAllByBedSizeIn(beds);
+        List<BedSize> beds = convertBedsStringsFromInputToBedSize(input.getBedSizes());
+        List<Bed> bedList = bedsRepository.findAllByBedSizeIn(beds);
 
-        if (BathroomType.UNKNOWN.equals(BathroomType.getByCode(input.getBathroomType()))) {
-            throw new IllegalArgumentException("Invalid bathroomtype - " + input.getBathroomType());
-        }
+        throwIfBathroomTypeDoesntExist(input);
 
-        Room room = Room.builder()
-                .bathroomType(BathroomType.getByCode(input.getBathroomType()))
-                .floor(input.getFloor())
-                .price(input.getPrice())
-                .roomNumber(input.getRoomNumber())
+        Room room = conversionService.convert(input, Room.RoomBuilder.class)
                 .beds(bedList)
                 .build();
 
@@ -168,26 +151,13 @@ public class SystemServiceImpl implements SystemService {
         log.info("Start adminUpdateInfoForRoom input: {}", input);
 
         Optional<Room> roomsOptional = roomsRepository.findById(UUID.fromString(input.getId()));
-        if (roomsOptional.isEmpty()) {
-            throw new IllegalArgumentException("Room with ID " + input.getId() + " doesn't exist!");
-        }
+        throwIfRoomDoesntExist(roomsOptional);
 
-        List<BedSize> beds = new ArrayList<>();
-        for (String bedString : input.getBedSizes()) {
-            if (BedSize.getByCode(bedString).equals(BedSize.UNKNOWN)) {
-                throw new IllegalArgumentException("Invalid bedsize - " + bedString);
-            }
-            beds.add(BedSize.getByCode(bedString));
-        }
-        List<Bed> bedList  = bedsRepository.findAllByBedSizeIn(beds);
+        List<BedSize> beds = convertBedsStringsFromInputToBedSize(input.getBedSizes());
+        List<Bed> bedList = bedsRepository.findAllByBedSizeIn(beds);
 
-        Room room = Room.builder()
-                .id(UUID.fromString(input.getId()))
+        Room room = conversionService.convert(input, Room.RoomBuilder.class)
                 .beds(bedList)
-                .roomNumber(input.getRoomNo())
-                .price(input.getPrice())
-                .floor(input.getFloor())
-                .bathroomType(BathroomType.getByCode(input.getBathroomType()))
                 .build();
 
         roomsRepository.save(room);
@@ -200,16 +170,24 @@ public class SystemServiceImpl implements SystemService {
         return output;
     }
 
+    private static List<BedSize> convertBedsStringsFromInputToBedSize(List<String> input) {
+        List<BedSize> beds = new ArrayList<>();
+        for (String bedString : input) {
+            if (BedSize.getByCode(bedString).equals(BedSize.UNKNOWN)) {
+                throw new IllegalArgumentException("Invalid bedsize - " + bedString);
+            }
+            beds.add(BedSize.getByCode(bedString));
+        }
+        return beds;
+    }
+
     //works
     @Override
     public AdminPartialUpdateOutput adminPartialUpdate(AdminPartialUpdateInput input, String id) {
         log.info("Start adminPartialUpdate input: {}", input);
 
         Optional<Room> optionalRoom = roomsRepository.findById(UUID.fromString(id));
-
-        if (optionalRoom.isEmpty()) {
-            throw new IllegalArgumentException("Room not found with roomNumber: " + input.getRoomNumber());
-        }
+        throwIfRoomDoesntExist(optionalRoom);
 
         Room room = optionalRoom.get();
 
@@ -242,9 +220,7 @@ public class SystemServiceImpl implements SystemService {
         log.info("Start deleteRoom input: {}", input);
 
         Optional<Room> roomsOptional = roomsRepository.findById(UUID.fromString(input.getId()));
-        if (roomsOptional.isEmpty()) {
-            throw new IllegalArgumentException("Room with ID " + input.getId() + " doesn't exist!");
-        }
+        throwIfRoomDoesntExist(roomsOptional);
 
         roomsRepository.delete(roomsOptional.get());
 
@@ -253,5 +229,29 @@ public class SystemServiceImpl implements SystemService {
 
         log.info("End deleteRoom output: {}", output);
         return output;
+    }
+
+    private static void throwIfReservationDoesntExist(Optional<Reservation> reservation) {
+        if (reservation.isEmpty()) {
+            throw new IllegalArgumentException("Reservation not found");
+        }
+    }
+
+    private static void throwIfRoomDoesntExist(Optional<Room> room) {
+        if (room.isEmpty()) {
+            throw new IllegalArgumentException("Room not found");
+        }
+    }
+
+    private static void throwIfBathroomTypeDoesntExist(AdminCreateRoomInput input) {
+        if (BathroomType.UNKNOWN.equals(BathroomType.getByCode(input.getBathroomType()))) {
+            throw new IllegalArgumentException("Invalid bathroomtype - " + input.getBathroomType());
+        }
+    }
+
+    private static void throwIfUserDoesntExist(Optional<User> user) {
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User not found");
+        }
     }
 }

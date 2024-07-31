@@ -1,4 +1,4 @@
-package com.tinqinacademy.hotel.core.services.errorhandling;
+package com.tinqinacademy.hotel.core.errorhandling;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
