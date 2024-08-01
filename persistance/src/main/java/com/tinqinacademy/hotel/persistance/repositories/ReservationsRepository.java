@@ -15,4 +15,5 @@ public interface ReservationsRepository extends JpaRepository<Reservation, UUID>
     List<Reservation> findByRoomId(UUID roomId);
     List<Reservation> findByRoomIdAndStartDateLessThanEqualAndEndDateGreaterThanEqual(UUID roomId, LocalDate startDate, LocalDate endDate);
     Optional<Reservation> findByStartDateAndEndDate(LocalDate startDate, LocalDate endDate);
+
 }

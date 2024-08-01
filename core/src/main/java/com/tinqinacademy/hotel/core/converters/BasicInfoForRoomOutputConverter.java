@@ -1,6 +1,6 @@
 package com.tinqinacademy.hotel.core.converters;
 
-import com.tinqinacademy.hotel.api.models.hotel.basic.info.BasicInfoForRoomOutput;
+import com.tinqinacademy.hotel.api.models.operations.hotel.basicinfo.BasicInfoForRoomOutput;
 import com.tinqinacademy.hotel.persistance.entities.Room;
 import org.springframework.core.convert.converter.Converter;
 

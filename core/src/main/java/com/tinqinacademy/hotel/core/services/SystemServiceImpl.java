@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import com.tinqinacademy.hotel.api.models.system.admin.create.room.AdminCreateRoomInput;
-import com.tinqinacademy.hotel.api.models.system.admin.create.room.AdminCreateRoomOutput;
-import com.tinqinacademy.hotel.api.models.system.admin.partial.update.AdminPartialUpdateInput;
-import com.tinqinacademy.hotel.api.models.system.admin.partial.update.AdminPartialUpdateOutput;
-import com.tinqinacademy.hotel.api.models.system.admin.report.visitor.AdminReportVisitorInput;
-import com.tinqinacademy.hotel.api.models.system.admin.report.visitor.AdminReportVisitorOutput;
-import com.tinqinacademy.hotel.api.models.system.admin.update.info.forroom.AdminUpdateInfoForRoomInput;
-import com.tinqinacademy.hotel.api.models.system.admin.update.info.forroom.AdminUpdateInfoForRoomOutput;
-import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomInput;
-import com.tinqinacademy.hotel.api.models.system.delete.room.DeleteRoomOutput;
-import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorInput;
-import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorOutput;
-import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorsDataInput;
+import com.tinqinacademy.hotel.api.models.operations.system.admincreateroom.AdminCreateRoomInput;
+import com.tinqinacademy.hotel.api.models.operations.system.admincreateroom.AdminCreateRoomOutput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminpartialupdate.AdminPartialUpdateInput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminpartialupdate.AdminPartialUpdateOutput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminreportvisitor.AdminReportVisitorInput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminreportvisitor.AdminReportVisitorOutput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminupdateinfoforroom.AdminUpdateInfoForRoomInput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminupdateinfoforroom.AdminUpdateInfoForRoomOutput;
+import com.tinqinacademy.hotel.api.models.operations.system.deleteroom.DeleteRoomInput;
+import com.tinqinacademy.hotel.api.models.operations.system.deleteroom.DeleteRoomOutput;
+import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorInput;
+import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorOutput;
+import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorsDataInput;
 import com.tinqinacademy.hotel.persistance.entities.*;
 import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import com.tinqinacademy.hotel.persistance.more.BedSize;
@@ -101,6 +101,7 @@ public class SystemServiceImpl implements SystemService {
     @Override
     public AdminReportVisitorOutput adminReport(AdminReportVisitorInput input) {
         log.info("Start adminReport input: {}", input);
+
 
         AdminReportVisitorOutput output = AdminReportVisitorOutput.builder()
                 .cardIssueAuthorityID(input.getCardNoID())

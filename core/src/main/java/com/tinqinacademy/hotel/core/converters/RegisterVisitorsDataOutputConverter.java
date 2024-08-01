@@ -1,11 +1,7 @@
 package com.tinqinacademy.hotel.core.converters;
 
-import com.tinqinacademy.hotel.api.models.system.admin.create.room.AdminCreateRoomInput;
-import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorInput;
-import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorOutput;
-import com.tinqinacademy.hotel.api.models.system.register.visitor.RegisterVisitorsDataInput;
+import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorsDataInput;
 import com.tinqinacademy.hotel.persistance.entities.Guest;
-import com.tinqinacademy.hotel.persistance.entities.Room;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;

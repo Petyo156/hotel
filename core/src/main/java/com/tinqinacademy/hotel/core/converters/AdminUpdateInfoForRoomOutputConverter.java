@@ -1,7 +1,6 @@
 package com.tinqinacademy.hotel.core.converters;
 
-import com.tinqinacademy.hotel.api.models.system.admin.create.room.AdminCreateRoomInput;
-import com.tinqinacademy.hotel.api.models.system.admin.update.info.forroom.AdminUpdateInfoForRoomInput;
+import com.tinqinacademy.hotel.api.models.operations.system.adminupdateinfoforroom.AdminUpdateInfoForRoomInput;
 import com.tinqinacademy.hotel.persistance.entities.Room;
 import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import lombok.extern.slf4j.Slf4j;
