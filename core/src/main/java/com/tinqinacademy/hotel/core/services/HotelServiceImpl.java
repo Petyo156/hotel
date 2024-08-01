@@ -43,7 +43,7 @@ public class HotelServiceImpl implements HotelService {
         this.conversionService = conversionService;
     }
 
-    //works
+    //works   //-made processor
     @Override
     public CheckRoomAvailabilityOutput checkRoomAvailability(CheckRoomAvailabilityInput input) {
         log.info("Start checkRoomAvailability input: {}", input);
@@ -62,7 +62,7 @@ public class HotelServiceImpl implements HotelService {
         return output;
     }
 
-    //works
+    //works  //-made processor
     @Override
     public BasicInfoForRoomOutput basicInfoForRoom(BasicInfoForRoomInput input) {
         log.info("Start basicInfoForRoom input: {}", input);
@@ -96,7 +96,7 @@ public class HotelServiceImpl implements HotelService {
         return datesOccupied;
     }
 
-    //works
+    //works //-made processor
     @Override
     public BookSpecifiedRoomOutput bookSpecifiedRoom(BookSpecifiedRoomInput input) {
         log.info("Start bookSpecifiedRoom input: {}", input);
@@ -125,7 +125,7 @@ public class HotelServiceImpl implements HotelService {
         return output;
     }
 
-    //works
+    //works  //-made processor
     @Override
     public UnbookBookedRoomOutput unbookBookedRoom(UnbookBookedRoomInput input) {
         log.info("Start unbookBookedRoom input: {}", input);

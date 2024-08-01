@@ -59,7 +59,7 @@ public class SystemServiceImpl implements SystemService {
         this.conversionService = conversionService;
     }
 
-    //works
+    //works   //created processor
     @Override
     public RegisterVisitorOutput registerVisitor(RegisterVisitorInput input) {
         log.info("Start registerVisitor input: {}", input);
@@ -97,7 +97,7 @@ public class SystemServiceImpl implements SystemService {
         return guestList;
     }
 
-    //-not implemented
+    //-not implemented //created processor
     @Override
     public AdminReportVisitorOutput adminReport(AdminReportVisitorInput input) {
         log.info("Start adminReport input: {}", input);
@@ -122,7 +122,7 @@ public class SystemServiceImpl implements SystemService {
         return output;
     }
 
-    //works
+    //works  //created processor
     @Override
     public AdminCreateRoomOutput adminCreateRoom(AdminCreateRoomInput input) {
         log.info("Start adminCreateRoom input: {}", input);
@@ -146,7 +146,7 @@ public class SystemServiceImpl implements SystemService {
         return output;
     }
 
-    //works
+    //works    //created processor
     @Override
     public AdminUpdateInfoForRoomOutput adminUpdateInfoForRoom(AdminUpdateInfoForRoomInput input) {
         log.info("Start adminUpdateInfoForRoom input: {}", input);
@@ -182,12 +182,12 @@ public class SystemServiceImpl implements SystemService {
         return beds;
     }
 
-    //works
+    //works   //created processor
     @Override
-    public AdminPartialUpdateOutput adminPartialUpdate(AdminPartialUpdateInput input, String id) {
+    public AdminPartialUpdateOutput adminPartialUpdate(AdminPartialUpdateInput input) {
         log.info("Start adminPartialUpdate input: {}", input);
 
-        Optional<Room> optionalRoom = roomsRepository.findById(UUID.fromString(id));
+        Optional<Room> optionalRoom = roomsRepository.findById(input.getRoomId());
         throwIfRoomDoesntExist(optionalRoom);
 
         Room room = optionalRoom.get();
@@ -215,7 +215,7 @@ public class SystemServiceImpl implements SystemService {
         }
     }
 
-    //works
+    //works  //created processor
     @Override
     public DeleteRoomOutput deleteRoom(DeleteRoomInput input) {
         log.info("Start deleteRoom input: {}", input);

@@ -19,6 +19,6 @@ public interface SystemService {
     AdminReportVisitorOutput adminReport(AdminReportVisitorInput input);
     AdminCreateRoomOutput adminCreateRoom(AdminCreateRoomInput input);
     AdminUpdateInfoForRoomOutput adminUpdateInfoForRoom(AdminUpdateInfoForRoomInput input);
-    AdminPartialUpdateOutput adminPartialUpdate(AdminPartialUpdateInput input, String id);
+    AdminPartialUpdateOutput adminPartialUpdate(AdminPartialUpdateInput input);
     DeleteRoomOutput deleteRoom(DeleteRoomInput input);
 }

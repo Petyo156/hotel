@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class SystemController {
@@ -99,9 +100,13 @@ public class SystemController {
     @PatchMapping(value = RestApiMapping.PATCH_adminPartialUpdate_PATH, consumes = "application/json-patch+json")
     public ResponseEntity<AdminPartialUpdateOutput> adminPartialUpdate(
             @Valid @RequestBody AdminPartialUpdateInput input,
-            @PathVariable("id") String id) {
+            @PathVariable("roomId") String id) {
 
-        return new ResponseEntity<>(systemService.adminPartialUpdate(input, id), HttpStatus.OK);
+        AdminPartialUpdateInput adminPartialUpdateInput = input.toBuilder()
+                .roomId(UUID.fromString(id))
+                .build();
+
+        return new ResponseEntity<>(systemService.adminPartialUpdate(input), HttpStatus.OK);
     }
 
     @DeleteMapping(RestApiMapping.DELETE_deleteRoom_PATH)
