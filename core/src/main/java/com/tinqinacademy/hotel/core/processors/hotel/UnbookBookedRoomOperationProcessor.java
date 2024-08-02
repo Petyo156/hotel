@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
+import jakarta.validation.Validator;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -36,6 +36,11 @@ public class UnbookBookedRoomOperationProcessor extends BaseOperationProcessor i
 
     @Override
     public Either<Errors, UnbookBookedRoomOutput> process(UnbookBookedRoomInput input) {
+        return validateInput(input)
+                .flatMap(valid -> getUnbookBookedRoomOutputs(input));
+    }
+
+    private Either<Errors, UnbookBookedRoomOutput> getUnbookBookedRoomOutputs(UnbookBookedRoomInput input) {
         return Try.of(() -> {
                     log.info("Start unbookBookedRoom input: {}", input);
 

@@ -1,7 +1,11 @@
 package com.tinqinacademy.hotel.core.processors;
 
+import com.tinqinacademy.hotel.api.models.base.OperationInput;
+import com.tinqinacademy.hotel.api.models.base.OperationOutput;
+import com.tinqinacademy.hotel.api.models.exceptions.ErrorResponse;
+import com.tinqinacademy.hotel.api.models.exceptions.Errors;
+import com.tinqinacademy.hotel.api.models.operations.hotel.basicinfo.BasicInfoForRoomOutput;
 import com.tinqinacademy.hotel.api.models.operations.hotel.bookroom.BookSpecifiedRoomInput;
-import com.tinqinacademy.hotel.api.models.operations.hotel.unbookbookedroom.UnbookBookedRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.admincreateroom.AdminCreateRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorInput;
 import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorsDataInput;
@@ -14,15 +18,17 @@ import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import com.tinqinacademy.hotel.persistance.more.BedSize;
 import com.tinqinacademy.hotel.persistance.more.DateUtils;
 import com.tinqinacademy.hotel.persistance.repositories.ReservationsRepository;
+import io.vavr.control.Either;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.validation.Validator;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class BaseOperationProcessor {
@@ -37,7 +43,25 @@ public class BaseOperationProcessor {
         this.validator = validator;
     }
 
-//   implement function validateInput
+    protected Either<Errors, ? extends OperationInput> validateInput(OperationInput input) {
+        Set<ConstraintViolation<OperationInput>> violations = validator.validate(input);
+
+        if (!violations.isEmpty()) {
+            List<String> errorMessages = violations.stream()
+                    .map(ConstraintViolation::getMessage)
+                    .collect(Collectors.toList());
+
+            ErrorResponse errorResponse = ErrorResponse.builder()
+                    .httpStatus(HttpStatus.BAD_REQUEST)
+                    .message(String.join(", ", errorMessages))
+                    .build();
+
+            return Either.left(errorResponse);
+        }
+
+        return Either.right(input);
+    }
+
 
     protected List<Guest> getAllGuestsForReservation(RegisterVisitorInput input) {
         List<Guest> guestList = new ArrayList<>();

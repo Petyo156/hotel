@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
+import jakarta.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +43,11 @@ public class AdminCreateRoomOperationProcessor extends BaseOperationProcessor im
 
     @Override
     public Either<Errors, AdminCreateRoomOutput> process(AdminCreateRoomInput input) {
+        return validateInput(input)
+                .flatMap(valid -> getAdminCreateRoomOutputs(input));
+    }
+
+    private Either<Errors, AdminCreateRoomOutput> getAdminCreateRoomOutputs(AdminCreateRoomInput input) {
         return Try.of(() -> {
                     log.info("Start adminCreateRoom input: {}", input);
 

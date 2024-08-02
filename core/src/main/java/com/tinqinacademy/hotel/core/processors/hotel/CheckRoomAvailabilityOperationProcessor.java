@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
+import jakarta.validation.Validator;
 
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +40,11 @@ public class CheckRoomAvailabilityOperationProcessor extends BaseOperationProces
 
     @Override
     public Either<Errors, CheckRoomAvailabilityOutput> process(CheckRoomAvailabilityInput input) {
+        return validateInput(input)
+                .flatMap(valid -> getCheckRoomAvailabilityOutputs(input));
+    }
+
+    private Either<Errors, CheckRoomAvailabilityOutput> getCheckRoomAvailabilityOutputs(CheckRoomAvailabilityInput input) {
         return Try.of(() -> {
                     log.info("Start checkRoomAvailability input: {}", input);
 

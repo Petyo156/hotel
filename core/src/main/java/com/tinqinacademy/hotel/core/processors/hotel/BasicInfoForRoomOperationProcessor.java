@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import org.springframework.validation.Validator;
+
+import jakarta.validation.Validator;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.instanceOf;
@@ -46,6 +47,11 @@ public class BasicInfoForRoomOperationProcessor extends BaseOperationProcessor i
 
     @Override
     public Either<Errors, BasicInfoForRoomOutput> process(BasicInfoForRoomInput input) {
+        return validateInput(input)
+                .flatMap(valid -> getSpecifiedRoomOutput(input));
+    }
+
+    private Either<Errors, BasicInfoForRoomOutput> getSpecifiedRoomOutput(BasicInfoForRoomInput input) {
         return Try.of(() -> {
                     log.info("Start basicInfoForRoom input: {}", input);
 
@@ -67,11 +73,11 @@ public class BasicInfoForRoomOperationProcessor extends BaseOperationProcessor i
 
                     log.info("End basicInfoForRoom output: {}", output);
                     return output;
-        })
+                })
                 .toEither()
                 .mapLeft(throwable -> Match(throwable).of(
                         Case($(instanceOf(IllegalArgumentException.class)),
                                 errorMapper.handleError(throwable, HttpStatus.BAD_REQUEST))
-        ));
+                ));
     }
 }

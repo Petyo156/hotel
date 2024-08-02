@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
+import jakarta.validation.Validator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,6 +46,11 @@ public class AdminPartialUpdateOperationProcessor extends BaseOperationProcessor
 
     @Override
     public Either<Errors, AdminPartialUpdateOutput> process(AdminPartialUpdateInput input) {
+        return validateInput(input)
+                .flatMap(valid -> getAdminPartialUpdateOutputs(input));
+    }
+
+    private Either<Errors, AdminPartialUpdateOutput> getAdminPartialUpdateOutputs(AdminPartialUpdateInput input) {
         return Try.of(() -> {
                     log.info("Start adminPartialUpdate input: {}", input);
 

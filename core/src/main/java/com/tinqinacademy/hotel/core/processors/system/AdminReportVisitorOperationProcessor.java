@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Validator;
+import jakarta.validation.Validator;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -35,6 +35,11 @@ public class AdminReportVisitorOperationProcessor extends BaseOperationProcessor
 
     @Override
     public Either<Errors, AdminReportVisitorOutput> process(AdminReportVisitorInput input) {
+        return validateInput(input)
+                .flatMap(valid -> getAdminReportVisitorOutputs(input));
+    }
+
+    private Either<Errors, AdminReportVisitorOutput> getAdminReportVisitorOutputs(AdminReportVisitorInput input) {
         return Try.of(() -> {
                     log.info("Start adminReport input: {}", input);
 
