@@ -9,7 +9,6 @@ import com.tinqinacademy.hotel.core.processors.hotel.BasicInfoForRoomOperationPr
 import com.tinqinacademy.hotel.core.processors.hotel.BookSpecifiedRoomOperationProcessor;
 import com.tinqinacademy.hotel.core.processors.hotel.CheckRoomAvailabilityOperationProcessor;
 import com.tinqinacademy.hotel.core.processors.hotel.UnbookBookedRoomOperationProcessor;
-import com.tinqinacademy.hotel.core.services.HotelService;
 import com.tinqinacademy.hotel.rest.controllers.config.RestApiMapping;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 public class HotelController extends BaseController {
     //only in post put patch POJOS are needed validations
 
-    private final HotelService hotelService;
     private final ObjectMapper objectMapper;
     private final CheckRoomAvailabilityOperationProcessor checkRoomAvailabilityOperationProcessor;
     private final BookSpecifiedRoomOperationProcessor bookSpecifiedRoomOperationProcessor;
@@ -32,9 +30,8 @@ public class HotelController extends BaseController {
     private final BasicInfoForRoomOperationProcessor basicInfoForRoomOperationProcessor;
 
     @Autowired
-    public HotelController(HotelService hotelService, ObjectMapper objectMapper, CheckRoomAvailabilityOperationProcessor checkRoomAvailabilityOperationProcessor,
+    public HotelController(ObjectMapper objectMapper, CheckRoomAvailabilityOperationProcessor checkRoomAvailabilityOperationProcessor,
                            BookSpecifiedRoomOperationProcessor bookSpecifiedRoomOperationProcessor, UnbookBookedRoomOperationProcessor unbookBookedRoomOperationProcessor, BasicInfoForRoomOperationProcessor basicInfoForRoomOperationProcessor) {
-        this.hotelService = hotelService;
         this.objectMapper = objectMapper;
         this.checkRoomAvailabilityOperationProcessor = checkRoomAvailabilityOperationProcessor;
         this.bookSpecifiedRoomOperationProcessor = bookSpecifiedRoomOperationProcessor;
@@ -57,7 +54,6 @@ public class HotelController extends BaseController {
                 .build();
 
         return handleOperation(checkRoomAvailabilityOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
-        //return new ResponseEntity<>(hotelService.checkRoomAvailability(input), HttpStatus.OK);
     }
 
     @GetMapping(RestApiMapping.GET_basicInfoForRoom_PATH)
@@ -69,20 +65,18 @@ public class HotelController extends BaseController {
                 .build();
 
         return handleOperation(basicInfoForRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
-        //return new ResponseEntity<>(hotelService.basicInfoForRoom(input), HttpStatus.OK);
     }
 
     @PostMapping(RestApiMapping.POST_bookSpecifiedRoom_PATH)
     public ResponseEntity<?> bookSpecifiedRoom(
-            @Valid @RequestBody BookSpecifiedRoomInput input,
+            @Valid @RequestBody BookSpecifiedRoomInput bookSpecifiedRoomInput,
             @PathVariable("roomId") String roomId) {
 
-        BookSpecifiedRoomInput bookSpecifiedRoomInput = input.toBuilder()
-                .roomId(String.valueOf(roomId))
+        BookSpecifiedRoomInput input = bookSpecifiedRoomInput.toBuilder()
+                .roomId(roomId)
                 .build();
 
         return handleOperation(bookSpecifiedRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
-        //return new ResponseEntity<>(hotelService.bookSpecifiedRoom(bookSpecifiedRoomInput), HttpStatus.OK);
     }
 
     @DeleteMapping(RestApiMapping.DELETE_unbookBookedRoom_PATH)
@@ -94,7 +88,6 @@ public class HotelController extends BaseController {
                 .build();
 
         return handleOperation(unbookBookedRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
-        //return new ResponseEntity<>(hotelService.unbookBookedRoom(input), HttpStatus.OK);
     }
 
 }
