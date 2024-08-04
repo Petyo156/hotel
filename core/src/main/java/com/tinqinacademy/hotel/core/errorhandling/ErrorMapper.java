@@ -7,13 +7,14 @@ import io.vavr.control.Either;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class ErrorMapper {
-    public ErrorWrapper handleError(Throwable ex, HttpStatus httpStatus){
+    public ErrorWrapper handleError(Throwable ex, HttpStatus httpStatus) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .message(ex.getMessage())
                 .httpStatus(httpStatus)
@@ -21,7 +22,7 @@ public class ErrorMapper {
 
         return ErrorWrapper.builder()
                 .errorResponseList(List.of(errorResponse))
-                .date(new Date(System.currentTimeMillis()))
+                .date(LocalDate.now())
                 .build();
     }
 }

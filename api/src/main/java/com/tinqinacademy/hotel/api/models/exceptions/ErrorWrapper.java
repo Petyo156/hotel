@@ -2,7 +2,7 @@ package com.tinqinacademy.hotel.api.models.exceptions;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,5 +13,5 @@ import java.util.List;
 @ToString
 public class ErrorWrapper implements Errors{
     private List<ErrorResponse> errorResponseList;
-    private Date date;
+    private LocalDate date;
 }

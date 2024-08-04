@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.tinqinacademy</groupId>
-            <artifactId>persistance</artifactId>
+            <artifactId>persistence</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>

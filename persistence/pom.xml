@@ -8,9 +8,9 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>persistance</artifactId>
+    <artifactId>persistence</artifactId>
     <version>${revision}</version>
-    <name>persistance</name>
+    <name>persistence</name>
 
 
     <dependencies>

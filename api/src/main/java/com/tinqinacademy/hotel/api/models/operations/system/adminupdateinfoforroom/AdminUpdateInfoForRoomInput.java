@@ -2,7 +2,6 @@ package com.tinqinacademy.hotel.api.models.operations.system.adminupdateinfoforr
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.tinqinacademy.hotel.api.models.base.OperationInput;
-import com.tinqinacademy.hotel.persistance.entities.Bed;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
