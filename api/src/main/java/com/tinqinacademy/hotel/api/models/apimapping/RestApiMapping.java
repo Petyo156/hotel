@@ -1,4 +1,4 @@
-package com.tinqinacademy.hotel.rest.controllers.config;
+package com.tinqinacademy.hotel.api.models.apimapping;
 
 public class RestApiMapping {
     //hotel

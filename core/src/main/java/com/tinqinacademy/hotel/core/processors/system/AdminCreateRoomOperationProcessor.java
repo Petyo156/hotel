@@ -60,10 +60,10 @@ public class AdminCreateRoomOperationProcessor extends BaseOperationProcessor im
                             .beds(bedList)
                             .build();
 
-                    roomsRepository.save(room);
+                    Room save = roomsRepository.save(room);
 
                     AdminCreateRoomOutput output = AdminCreateRoomOutput.builder()
-                            .id(room.getId())
+                            .id(save.getId())
                             .build();
 
                     log.info("End adminCreateRoom output: {}", output);

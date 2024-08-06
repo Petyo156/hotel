@@ -1,4 +1,4 @@
-package com.tinqinacademy.hotel.rest.controllers.controllers;
+package com.tinqinacademy.hotel.rest.controllers;
 
 import com.tinqinacademy.hotel.api.models.base.OperationOutput;
 import com.tinqinacademy.hotel.api.models.exceptions.Errors;

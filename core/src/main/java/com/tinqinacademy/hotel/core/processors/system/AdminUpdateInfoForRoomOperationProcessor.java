@@ -60,10 +60,10 @@ public class AdminUpdateInfoForRoomOperationProcessor extends BaseOperationProce
                             .beds(bedList)
                             .build();
 
-                    roomsRepository.save(room);
+                    Room save = roomsRepository.save(room);
 
                     AdminUpdateInfoForRoomOutput output = AdminUpdateInfoForRoomOutput.builder()
-                            .id(room.getId())
+                            .id(save.getId())
                             .build();
 
                     log.info("End adminUpdateInfoForRoom output: {}", output);

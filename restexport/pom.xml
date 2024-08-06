@@ -8,13 +8,19 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>domain</artifactId>
+    <artifactId>restexport</artifactId>
     <version>${revision}</version>
+    <name>restexport</name>
 
-    <name>domain</name>
 
     <dependencies>
-
+        <dependency>
+            <groupId>com.tinqinacademy.hotel</groupId>
+            <artifactId>api</artifactId>
+            <version>${revision}</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
 
 </project>

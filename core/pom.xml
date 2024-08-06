@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.tinqinacademy</groupId>
+        <groupId>com.tinqinacademy.hotel</groupId>
         <artifactId>hotel</artifactId>
         <version>${revision}</version>
     </parent>
@@ -16,14 +16,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.tinqinacademy</groupId>
-            <artifactId>api</artifactId>
+            <groupId>com.tinqinacademy.hotel</groupId>
+            <artifactId>domain</artifactId>
             <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.tinqinacademy</groupId>
-            <artifactId>persistance</artifactId>
+            <groupId>com.tinqinacademy.hotel</groupId>
+            <artifactId>persistence</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
@@ -31,6 +31,12 @@
             <groupId>io.vavr</groupId>
             <artifactId>vavr</artifactId>
             <version>0.10.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.tinqinacademy.hotel</groupId>
+            <artifactId>api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

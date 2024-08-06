@@ -1,0 +1,2 @@
+CREATE DATABASE comments;
+CREATE DATABASE hotel;

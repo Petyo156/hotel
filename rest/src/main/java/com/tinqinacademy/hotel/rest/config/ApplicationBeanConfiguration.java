@@ -1,4 +1,4 @@
-package com.tinqinacademy.hotel.rest.controllers.config;
+package com.tinqinacademy.hotel.rest.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;

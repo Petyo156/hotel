@@ -1,6 +1,7 @@
-package com.tinqinacademy.hotel.rest.controllers.controllers;
+package com.tinqinacademy.hotel.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinqinacademy.hotel.api.models.apimapping.RestApiMapping;
 import com.tinqinacademy.hotel.api.models.operations.system.admincreateroom.AdminCreateRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.adminpartialupdate.AdminPartialUpdateInput;
 import com.tinqinacademy.hotel.api.models.operations.system.adminreportvisitor.AdminReportVisitorInput;
@@ -8,7 +9,6 @@ import com.tinqinacademy.hotel.api.models.operations.system.adminupdateinfoforro
 import com.tinqinacademy.hotel.api.models.operations.system.deleteroom.DeleteRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorInput;
 import com.tinqinacademy.hotel.core.processors.system.*;
-import com.tinqinacademy.hotel.rest.controllers.config.RestApiMapping;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

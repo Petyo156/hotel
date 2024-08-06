@@ -1,6 +1,7 @@
-package com.tinqinacademy.hotel.rest.controllers.controllers;
+package com.tinqinacademy.hotel.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tinqinacademy.hotel.api.models.apimapping.RestApiMapping;
 import com.tinqinacademy.hotel.api.models.operations.hotel.basicinfo.BasicInfoForRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.hotel.bookroom.BookSpecifiedRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.hotel.checkroom.CheckRoomAvailabilityInput;
@@ -9,7 +10,6 @@ import com.tinqinacademy.hotel.core.processors.hotel.BasicInfoForRoomOperationPr
 import com.tinqinacademy.hotel.core.processors.hotel.BookSpecifiedRoomOperationProcessor;
 import com.tinqinacademy.hotel.core.processors.hotel.CheckRoomAvailabilityOperationProcessor;
 import com.tinqinacademy.hotel.core.processors.hotel.UnbookBookedRoomOperationProcessor;
-import com.tinqinacademy.hotel.rest.controllers.config.RestApiMapping;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
