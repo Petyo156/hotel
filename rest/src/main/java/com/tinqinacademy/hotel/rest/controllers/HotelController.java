@@ -1,7 +1,7 @@
 package com.tinqinacademy.hotel.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinqinacademy.hotel.api.models.apimapping.RestApiMapping;
+import com.tinqinacademy.hotel.api.models.apimapping.RestApiMappingHotel;
 import com.tinqinacademy.hotel.api.models.operations.hotel.basicinfo.BasicInfoForRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.hotel.bookroom.BookSpecifiedRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.hotel.checkroom.CheckRoomAvailabilityInput;
@@ -39,7 +39,7 @@ public class HotelController extends BaseController {
         this.basicInfoForRoomOperationProcessor = basicInfoForRoomOperationProcessor;
     }
 
-    @GetMapping(RestApiMapping.GET_checkAvailability_PATH)
+    @GetMapping(RestApiMappingHotel.GET_checkAvailability_PATH)
     public ResponseEntity<?> checkAvailability(
             @RequestParam("startDate") LocalDate startDate,
             @RequestParam("endDate") LocalDate endDate,
@@ -56,7 +56,7 @@ public class HotelController extends BaseController {
         return handleOperation(checkRoomAvailabilityOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(RestApiMapping.GET_basicInfoForRoom_PATH)
+    @GetMapping(RestApiMappingHotel.GET_basicInfoForRoom_PATH)
     public ResponseEntity<?> basicInfoForRoom(
             @PathVariable("roomId") String roomId) {
 
@@ -67,7 +67,7 @@ public class HotelController extends BaseController {
         return handleOperation(basicInfoForRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(RestApiMapping.POST_bookSpecifiedRoom_PATH)
+    @PostMapping(RestApiMappingHotel.POST_bookSpecifiedRoom_PATH)
     public ResponseEntity<?> bookSpecifiedRoom(
             @Valid @RequestBody BookSpecifiedRoomInput bookSpecifiedRoomInput,
             @PathVariable("roomId") String roomId) {
@@ -79,7 +79,7 @@ public class HotelController extends BaseController {
         return handleOperation(bookSpecifiedRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping(RestApiMapping.DELETE_unbookBookedRoom_PATH)
+    @DeleteMapping(RestApiMappingHotel.DELETE_unbookBookedRoom_PATH)
     public ResponseEntity<?> unbookBookedRoom(
             @PathVariable String bookingId) {
 

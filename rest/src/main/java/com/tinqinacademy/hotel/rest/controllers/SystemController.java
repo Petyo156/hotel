@@ -1,7 +1,7 @@
 package com.tinqinacademy.hotel.rest.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tinqinacademy.hotel.api.models.apimapping.RestApiMapping;
+import com.tinqinacademy.hotel.api.models.apimapping.RestApiMappingHotel;
 import com.tinqinacademy.hotel.api.models.operations.system.admincreateroom.AdminCreateRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.adminpartialupdate.AdminPartialUpdateInput;
 import com.tinqinacademy.hotel.api.models.operations.system.adminreportvisitor.AdminReportVisitorInput;
@@ -44,14 +44,14 @@ public class SystemController extends BaseController {
         this.deleteRoomOperationProcessor = deleteRoomOperationProcessor;
     }
 
-    @PostMapping(RestApiMapping.POST_registerVisitor_PATH)
+    @PostMapping(RestApiMappingHotel.POST_registerVisitor_PATH)
     public ResponseEntity<?> registerVisitor(
             @Valid @RequestBody RegisterVisitorInput input) {
 
         return handleOperation(registerVisitorOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @GetMapping(RestApiMapping.GET_adminReportVisitor_PATH)
+    @GetMapping(RestApiMappingHotel.GET_adminReportVisitor_PATH)
     public ResponseEntity<?> adminReportVisitor(
             @RequestParam("visitorsData") List<String> visitorsData,
             @RequestParam("startDate") LocalDate startDate,
@@ -79,13 +79,13 @@ public class SystemController extends BaseController {
         return handleOperation(adminReportVisitorOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping(RestApiMapping.POST_adminCreateRoom_PATH)
+    @PostMapping(RestApiMappingHotel.POST_adminCreateRoom_PATH)
     public ResponseEntity<?> adminCreateRoom(
             @Valid @RequestBody AdminCreateRoomInput input) {
         return handleOperation(adminCreateRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping(RestApiMapping.PUT_adminUpdateInfoForRoom_PATH)
+    @PutMapping(RestApiMappingHotel.PUT_adminUpdateInfoForRoom_PATH)
     public ResponseEntity<?> adminUpdateInfoForRoom(
             @Valid @RequestBody AdminUpdateInfoForRoomInput adminUpdateInfoForRoomInput,
             @PathVariable("id") String id) {
@@ -97,7 +97,7 @@ public class SystemController extends BaseController {
         return handleOperation(adminUpdateInfoForRoomOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @PatchMapping(value = RestApiMapping.PATCH_adminPartialUpdate_PATH, consumes = "application/json-patch+json")
+    @PatchMapping(value = RestApiMappingHotel.PATCH_adminPartialUpdate_PATH, consumes = "application/json-patch+json")
     public ResponseEntity<?> adminPartialUpdate(
             @Valid @RequestBody AdminPartialUpdateInput adminPartialUpdateInput,
             @PathVariable("id") String id) {
@@ -109,7 +109,7 @@ public class SystemController extends BaseController {
         return handleOperation(adminPartialUpdateOperationProcessor.process(input), HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping(RestApiMapping.DELETE_deleteRoom_PATH)
+    @DeleteMapping(RestApiMappingHotel.DELETE_deleteRoom_PATH)
     public ResponseEntity<?> deleteRoom(
             @PathVariable("id") String id) {
         DeleteRoomInput input = DeleteRoomInput.builder()

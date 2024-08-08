@@ -1,6 +1,6 @@
 package com.tinqinacademy.hotel.api.models.apimapping;
 
-public class RestApiMapping {
+public class RestApiMappingHotel {
     //hotel
     public static final String GET_checkAvailability_PATH = "/hotel/rooms";
     public static final String GET_basicInfoForRoom_PATH = "/hotel/{roomId}";
