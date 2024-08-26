@@ -1,10 +1,8 @@
 package com.tinqinacademy.hotel.core.processors;
 
 import com.tinqinacademy.hotel.api.models.base.OperationInput;
-import com.tinqinacademy.hotel.api.models.base.OperationOutput;
 import com.tinqinacademy.hotel.api.models.exceptions.ErrorResponse;
 import com.tinqinacademy.hotel.api.models.exceptions.Errors;
-import com.tinqinacademy.hotel.api.models.operations.hotel.basicinfo.BasicInfoForRoomOutput;
 import com.tinqinacademy.hotel.api.models.operations.hotel.bookroom.BookSpecifiedRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.admincreateroom.AdminCreateRoomInput;
 import com.tinqinacademy.hotel.api.models.operations.system.registervisitor.RegisterVisitorInput;
@@ -13,7 +11,6 @@ import com.tinqinacademy.hotel.core.errorhandling.ErrorMapper;
 import com.tinqinacademy.hotel.persistance.entities.Guest;
 import com.tinqinacademy.hotel.persistance.entities.Reservation;
 import com.tinqinacademy.hotel.persistance.entities.Room;
-import com.tinqinacademy.hotel.persistance.entities.User;
 import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import com.tinqinacademy.hotel.persistance.more.BedSize;
 import com.tinqinacademy.hotel.persistance.more.DateUtils;
@@ -24,7 +21,6 @@ import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -85,11 +81,6 @@ public class BaseOperationProcessor {
         }
     }
 
-    protected void throwIfUserDoesntExist(Optional<User> user) {
-        if (user.isEmpty()) {
-            throw new IllegalArgumentException("User not found");
-        }
-    }
 
     protected void throwIfBathroomTypeDoesntExist(AdminCreateRoomInput input) {
         if (BathroomType.UNKNOWN.equals(BathroomType.getByCode(input.getBathroomType()))) {

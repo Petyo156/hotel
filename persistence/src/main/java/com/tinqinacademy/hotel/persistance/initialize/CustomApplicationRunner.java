@@ -2,7 +2,6 @@ package com.tinqinacademy.hotel.persistance.initialize;
 
 import com.tinqinacademy.hotel.persistance.entities.Bed;
 import com.tinqinacademy.hotel.persistance.entities.Room;
-import com.tinqinacademy.hotel.persistance.entities.User;
 import com.tinqinacademy.hotel.persistance.more.BathroomType;
 import com.tinqinacademy.hotel.persistance.more.BedSize;
 import com.tinqinacademy.hotel.persistance.repositories.*;
@@ -23,13 +22,11 @@ public class CustomApplicationRunner implements ApplicationRunner {
     // some global startup logic with access to complex command-line arguments.
 
     private BedsRepository bedsRepository;
-    private UsersRepository usersRepository;
     private RoomsRepository roomsRepository;
 
     @Autowired
-    public CustomApplicationRunner(BedsRepository bedsRepository, UsersRepository usersRepository, RoomsRepository roomsRepository) {
+    public CustomApplicationRunner(BedsRepository bedsRepository, RoomsRepository roomsRepository) {
         this.bedsRepository = bedsRepository;
-        this.usersRepository = usersRepository;
         this.roomsRepository = roomsRepository;
     }
 
@@ -55,33 +52,6 @@ public class CustomApplicationRunner implements ApplicationRunner {
             bedsRepository.save(Bed.builder()
                     .id(UUID.randomUUID())
                     .bedSize(BedSize.QUEENSIZE)
-                    .build());
-        }
-
-        if (usersRepository.count() == 0) {
-            usersRepository.save(User.builder()
-                    .id(UUID.randomUUID())
-                    .birthDate(Date.valueOf("2030-12-12"))
-                    .email("lol1@abv.bg")
-                    .password("password1")
-                    .username("user1")
-                    .phoneNumber("12345")
-                    .build());
-            usersRepository.save(User.builder()
-                    .id(UUID.randomUUID())
-                    .birthDate(Date.valueOf("2031-12-12"))
-                    .email("lol2@abv.bg")
-                    .password("password2")
-                    .username("user2")
-                    .phoneNumber("12345")
-                    .build());
-            usersRepository.save(User.builder()
-                    .id(UUID.randomUUID())
-                    .birthDate(Date.valueOf("2032-12-12"))
-                    .email("lol3@abv.bg")
-                    .password("password3")
-                    .username("user3")
-                    .phoneNumber("12345")
                     .build());
         }
 
@@ -116,28 +86,3 @@ public class CustomApplicationRunner implements ApplicationRunner {
         log.info("Fully working!!!");
     }
 }
-//    @Override
-//    public void run(ApplicationArguments args) {
-//        log.info("Fully working!!!");
-//        Set<Beds> bedList = new HashSet<>(repository.findAll());
-//        Set<Beds> enumList = convertEnum();
-//        for (Beds bed : enumList) {
-//            if (!bedList.contains(bed)) {
-//                repository.save(bed);
-//            }
-//        }
-//        log.info("Finished initializing enums {}", bedList);
-//
-//    }
-//
-//    private Set<Beds> convertEnum() {
-//        Set<Beds> bedList = new HashSet<>();
-//        for (BedSize bed : BedSize.values()) {
-//            bedList.add(Beds.builder()
-//                    .id(UUID.randomUUID())
-//                    .bedSize(bed.toString())
-//                    .peopleCount(bed.getCapacity())
-//                    .build());
-//        }
-//        return bedList;
-//    }

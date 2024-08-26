@@ -16,8 +16,6 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 @ToString
 public class UnbookBookedRoomInput implements OperationInput {
-    //@NotNull(message = "id can't be null!")
-    //@Size(min = 1, max = 5)
     @JsonIgnore
     private String bookingId;
 }

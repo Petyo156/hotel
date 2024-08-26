@@ -23,15 +23,12 @@ public class AdminReportVisitorInput implements OperationInput {
     private LocalDate endDate;
 
     @NotNull(message = "firstName can't be null!")
-    @Size(min = 1, message = "firstName - atleast 1 char long")
     private String firstName;
 
     @NotNull(message = "lastName can't be null!")
-    @Size(min = 1, message = "lastName - atleast 1 char long")
     private String lastName;
 
     @NotNull(message = "phoneNo can't be null!")
-    @Size(min = 5, max = 5, message = "phoneNo - 5 chars long")
     private String phoneNo;
 
     @NotNull(message = "cardNoID can't be null!")
@@ -50,6 +47,5 @@ public class AdminReportVisitorInput implements OperationInput {
     private LocalDate cardIssueDateID;
 
     @NotNull(message = "roomNo can't be null!")
-    @Size(min = 1, max = 5, message = "id should be 1-5 chars long")
     private String roomNo;
 }
